@@ -37,6 +37,10 @@ $x$: input \
 $y$: output \
 $f$: Activation function
 
+Here is a case where $\theta$ is vital to categorizing the input points:
+
+![theta](media/theta.png)
+
 Not all problems are linearly separable. This means that a line can't always divide our data the way we want. Later we will be learning how to divide non-linear problems by using curves, imaginary numbers, etc.
 
 ## Training
