@@ -2,7 +2,7 @@ TEX_MAIN = neural1.tex
 
 all: neural1
 
-report: $(TEX_MAIN)
+neural1: $(TEX_MAIN)
 	latexmk -pdf  $(TEX_MAIN) 
 
 clean:
