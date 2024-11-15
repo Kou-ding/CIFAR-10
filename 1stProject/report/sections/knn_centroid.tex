@@ -1,0 +1,163 @@
+\IEEEPARstart{I}{n} these simple training algorithms the training data is stored as 3D image tensors (32x32x3) 
+which we flatten into 1D arrays of 3072 elements(features). These arrays are later used to calculate 
+one of two things:
+\begin{itemize}
+  \item Either the 1 nearest image from the training images (and the majority of the 3 nearest images)
+  \item Or the distance between the test image and the centroid of the training images' classes.
+\end{itemize}
+The code included (cifar10knnCentroid.py) is extensively documented and contains key information 
+as comments. 
+
+Here are some results from a test run using a subset of the data:\\
+
+Loading and preparing CIFAR-10 dataset...\\
+Files already downloaded and verified\\
+Files already downloaded and verified\\
+
+Evaluating KNN (k=1)...\\
+
+KNN (k=1) Results:\\
+Training time: 0.36 seconds\\
+Accuracy: 0.2680
+% KNN (k=1)
+\begin{table}[H]
+  \centering
+  \begin{tabular}{r r r r r} % right-aligned columns
+    \toprule
+    Class & Precision & Recall & F1-score & Support \\
+    \midrule
+    0 & 0.27 & 0.33 & 0.30 & 103 \\
+    1 & 0.55 & 0.13 & 0.22 & 89 \\
+    2 & 0.19 & 0.37 & 0.26 & 100 \\
+    3 & 0.28 & 0.18 & 0.22 & 103 \\
+    4 & 0.15 & 0.39 & 0.22 & 90 \\
+    5 & 0.21 & 0.15 & 0.18 & 86 \\
+    6 & 0.29 & 0.25 & 0.27 & 112 \\
+    7 & 0.47 & 0.18 & 0.26 & 102 \\
+    8 & 0.42 & 0.56 & 0.48 & 106 \\
+    9 & 0.54 & 0.12 & 0.20 & 109 \\
+    \midrule
+    Accuracy & & & 0.27 & 1000 \\
+    Macro avg & 0.34 & 0.27 & 0.26 & 1000 \\
+    Weighted avg & 0.34 & 0.27 & 0.26 & 1000 \\
+    \bottomrule
+  \end{tabular}
+  \vspace{10pt}
+  \caption{KNN (k=1): Detailed Classification Report}
+\end{table}
+
+Evaluating KNN (k=3)...\\
+
+KNN (k=3) Results:\\
+Training time: 0.33 seconds\\
+Accuracy: 0.2610
+% KNN (k=3) 
+\begin{table}[H]
+  \centering
+  \begin{tabular}{r r r r r}
+    \toprule
+    Class & Precision & Recall & F1-score & Support \\
+    \midrule
+    0 & 0.27 & 0.55 & 0.36 & 103 \\
+    1 & 0.41 & 0.16 & 0.23 & 89 \\
+    2 & 0.17 & 0.45 & 0.25 & 100 \\
+    3 & 0.29 & 0.17 & 0.22 & 103 \\
+    4 & 0.15 & 0.33 & 0.21 & 90 \\
+    5 & 0.17 & 0.07 & 0.10 & 86 \\
+    6 & 0.37 & 0.20 & 0.26 & 112 \\
+    7 & 0.60 & 0.09 & 0.15 & 102 \\
+    8 & 0.49 & 0.52 & 0.50 & 106 \\
+    9 & 0.56 & 0.05 & 0.08 & 109 \\
+    \midrule
+    Accuracy & & & 0.26 & 1000 \\
+    Macro avg & 0.35 & 0.26 & 0.24 & 1000 \\
+    Weighted avg & 0.35 & 0.26 & 0.24 & 1000 \\
+    \bottomrule
+  \end{tabular}
+  \vspace{10pt}
+  \caption{KNN (k=3): Detailed Classification Report}
+\end{table}
+
+Evaluating Nearest Centroid...\\
+
+Nearest Centroid Results:\\
+Training time: 0.03 seconds\\
+Accuracy: 0.2910
+% Nearest Centroid
+\begin{table}[H]
+\centering
+  \begin{tabular}{r r r r r}
+    \toprule
+    Class & Precision & Recall & F1-score & Support \\
+    \midrule
+    0 & 0.26 & 0.50 & 0.34 & 103 \\
+    1 & 0.33 & 0.24 & 0.27 & 89 \\
+    2 & 0.23 & 0.11 & 0.15 & 100 \\
+    3 & 0.12 & 0.02 & 0.03 & 103 \\
+    4 & 0.18 & 0.08 & 0.11 & 90 \\
+    5 & 0.19 & 0.22 & 0.20 & 86 \\
+    6 & 0.26 & 0.54 & 0.35 & 112 \\
+    7 & 0.32 & 0.20 & 0.24 & 102 \\
+    8 & 0.50 & 0.42 & 0.46 & 106 \\
+    9 & 0.36 & 0.49 & 0.42 & 109 \\
+    \midrule
+    Accuracy & & & 0.29 & 1000 \\
+    Macro avg & 0.28 & 0.28 & 0.26 & 1000 \\
+    Weighted avg & 0.28 & 0.29 & 0.26 & 1000 \\
+    \bottomrule
+  \end{tabular}
+  \vspace{10pt}
+  \caption{Nearest Centroid: Detailed Classification Report} 
+\end{table}
+
+\begin{table}[H]
+  \centering
+  \begin{tabular}{lcc}
+    \toprule
+    Classifier & Accuracy & Training Time (s) \\
+    \midrule
+    KNN (k=1) & 0.2680 & 0.36 \\
+    KNN (k=3) & 0.2610 & 0.33 \\
+    Nearest Centroid & 0.2910 & 0.03 \\
+    \bottomrule
+  \end{tabular}
+  \vspace{10pt}
+  \caption{Performance Comparison of Classifiers}
+\end{table}
+
+\subsection{Result's Interpretation}
+When comparing the three classifiers we observe that their accuracy is about the same (slight edge 
+given to the nearest centroid classifier). However, the Nearest Centroid classifier has the lowest 
+training time, by a significant margin. This is due to the fact that it only needs to calculate the 
+centroid of each class once when, in comparison, KNN needs to calculate many distances between a 
+specific test image and all the training images.
+
+The metrics used to evaluate the classifiers are the following:
+\begin{itemize}
+  \item Precision
+  \item Recall
+  \item F1-score
+  \item Support
+\end{itemize}
+
+\subsubsection{Precision}
+The ratio of correctly predicted positive observations to the total predicted 
+positive observations.
+\begin{equation}
+  Precision = \frac{TruePositives}{TruePositives + FalsePositives}
+\end{equation}
+
+\subsubsection{Recall}
+The ratio of correctly predicted positive observations to the total actual positive observations.
+\begin{equation}
+  Recall = \frac{TruePositives}{TruePositives + FalseNegatives}
+\end{equation}
+
+\subsubsection{F1-score}
+The weighted average of Precision and Recall.
+\begin{equation}
+  F1score = 2 * \frac{Precision * Recall}{Precision + Recall}
+\end{equation}
+
+\subsubsection{Support}
+The number of occurrences of each class in the dataset. It is the number of instances in each class.
