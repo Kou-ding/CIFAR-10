@@ -1,5 +1,10 @@
-Notes/books/*
-Notes/lectures/*
-1stProject/vproject1/*
-1stProject/cifar-10-batches-py/*
-1stProject/cifar10_best.pth
+# Virtual Environment
+.venv/*
+
+# Datasets
+cifar-10-batches-py/*
+manual-batches/*
+
+# Produced Models
+cifar10_best.pth
+91.27Accuracy.pth

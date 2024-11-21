@@ -1,3 +1,3 @@
-# Neural-Networks
+# CIFAR-10
 
-Notes and assignments of the university course:  "Neural Networks".
+Training various neural networks utilizing the CIFAR-10 dataset.

@@ -1,5 +1,4 @@
 # CIFAR-10 Image Classification using Convolutional Neural Networks
-
 import torch
 import torch.nn as nn
 import torch.optim as optim
@@ -12,44 +11,48 @@ import time
 
 # Set random seed for reproducibility
 torch.manual_seed(42)
+# Uses GPU if available
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
 # Data Preprocessing
+# Tranformations for the training dataset
 transform_train = transforms.Compose([
-    transforms.RandomCrop(32, padding=4),
-    transforms.RandomHorizontalFlip(),
-    transforms.ToTensor(),
-    transforms.Normalize((0.4914, 0.4822, 0.4465), (0.2023, 0.1994, 0.2010))
+    transforms.RandomCrop(32, padding=4), # Randomly crops image with padding
+    transforms.RandomHorizontalFlip(),  # Randomly flips image horizontally
+    transforms.ToTensor(), # Converts to PyTorch tensor
+    transforms.Normalize((0.4914, 0.4822, 0.4465), (0.2023, 0.1994, 0.2010))  # Normalizes using CIFAR-10 means and standard deviations
 ])
-
+# Tranformations for the test dataset
 transform_test = transforms.Compose([
-    transforms.ToTensor(),
+    transforms.ToTensor(), # Converts to PyTorch tensor
     transforms.Normalize((0.4914, 0.4822, 0.4465), (0.2023, 0.1994, 0.2010))
 ])
 
-# Load CIFAR-10 dataset
+# Load CIFAR-10 training dataset
 trainset = torchvision.datasets.CIFAR10(root='./1stProject/cifar-10-batches-py', train=True,
                                       download=True, transform=transform_train)
 trainloader = DataLoader(trainset, batch_size=128,
                         shuffle=True, num_workers=2)
 
+# Load CIFAR-10 test dataset
 testset = torchvision.datasets.CIFAR10(root='./1stProject/cifar-10-batches-py', train=False,
                                      download=True, transform=transform_test)
 testloader = DataLoader(testset, batch_size=100,
                        shuffle=False, num_workers=2)
 
+# Specify the classes
 classes = ('plane', 'car', 'bird', 'cat', 'deer',
            'dog', 'frog', 'horse', 'ship', 'truck')
 
 # Visualization function
 def imshow(img):
-    img = img / 2 + 0.5  # unnormalize
-    npimg = img.numpy()
-    plt.imshow(np.transpose(npimg, (1, 2, 0)))
+    img = img / 2 + 0.5  # reverse normalization
+    npimg = img.numpy() # convert to numpy array
+    plt.imshow(np.transpose(npimg, (1, 2, 0))) # transpose to (H, W, C) for correct display
     plt.axis('off')
     plt.savefig('./1stProject/cifar10.png')
 
-# Get random training images
+# Get random training images2
 dataiter = iter(trainloader)
 images, labels = next(dataiter)
 
@@ -63,15 +66,17 @@ class CNN(nn.Module):
     def __init__(self):
         super(CNN, self).__init__()
         self.conv_layers = nn.Sequential(
-            nn.Conv2d(3, 32, 3, padding=1),
-            nn.BatchNorm2d(32),
-            nn.ReLU(),
+            # First convolutional layer 
+            nn.Conv2d(3, 32, 3, padding=1), # 3 input channels, 32 output channels, 3x3 kernel, 1 padding
+            nn.BatchNorm2d(32), # Batch normalization
+            nn.ReLU(), # ReLU activation function
             nn.Conv2d(32, 64, 3, padding=1),
             nn.BatchNorm2d(64),
             nn.ReLU(),
-            nn.MaxPool2d(2, 2),
-            nn.Dropout(0.25),
+            nn.MaxPool2d(2, 2),  # Reduces spatial dimensions
+            nn.Dropout(0.25), # Prevents overfitting
             
+            # Second convolutional layer
             nn.Conv2d(64, 128, 3, padding=1),
             nn.BatchNorm2d(128),
             nn.ReLU(),
@@ -81,6 +86,7 @@ class CNN(nn.Module):
             nn.MaxPool2d(2, 2),
             nn.Dropout(0.25),
             
+            # Third convolutional layer
             nn.Conv2d(128, 256, 3, padding=1),
             nn.BatchNorm2d(256),
             nn.ReLU(),
@@ -92,10 +98,10 @@ class CNN(nn.Module):
         )
         
         self.fc_layers = nn.Sequential(
-            nn.Linear(256 * 4 * 4, 512),
+            nn.Linear(256 * 4 * 4, 512), # Fully connected layers
             nn.ReLU(),
             nn.Dropout(0.5),
-            nn.Linear(512, 10)
+            nn.Linear(512, 10) # Output layer
         )
 
     def forward(self, x):
@@ -120,12 +126,13 @@ def train(model, trainloader, criterion, optimizer, device):
     for i, data in enumerate(trainloader, 0):
         inputs, labels = data[0].to(device), data[1].to(device)
         
-        optimizer.zero_grad()
-        outputs = model(inputs)
-        loss = criterion(outputs, labels)
-        loss.backward()
-        optimizer.step()
+        optimizer.zero_grad() # Zero the parameter gradients
+        outputs = model(inputs) # Forward pass
+        loss = criterion(outputs, labels) # Calculate loss
+        loss.backward() # Backward pass
+        optimizer.step() # Update weights
         
+        # Track training statistics
         running_loss += loss.item()
         _, predicted = outputs.max(1)
         total += labels.size(0)
@@ -179,7 +186,7 @@ for epoch in range(num_epochs):
     test_acc_history.append(test_acc)
     
     # Learning rate scheduling
-    scheduler.step(test_loss)
+    scheduler.step(test_loss) # Adjust learning rate based on loss
     
     # Save best model
     if test_acc > best_acc:
@@ -187,7 +194,7 @@ for epoch in range(num_epochs):
         torch.save(model.state_dict(), './1stProject/cifar10_best.pth')
         best_acc = test_acc
 
-training_time = time.time() - start_time
+training_time = time.time() - start_time # Calculate training time
 print(f'\nTraining completed in {training_time/60:.2f} minutes')
 print(f'Best accuracy: {best_acc:.2f}%')
 
