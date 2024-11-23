@@ -10,5 +10,8 @@ source .venv/bin/activate
 ```
 Dependencies:
 ```bash
+# Dependencies for the Convolutional Neural Network
 pip install torch torchvision matplotlib numpy
+# Additional dependencies for the KNN-Centroid Classifiers
+pip install scikit
 ```

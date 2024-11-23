@@ -3,8 +3,7 @@
 
 # Datasets
 cifar-10-batches-py/*
-manual-batches/*
+manual-batch/*
 
 # Produced Models
-cifar10_best.pth
-91.27Accuracy.pth
+*.pth

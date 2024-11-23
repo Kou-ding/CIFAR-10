@@ -71,24 +71,23 @@ def load_model(model_path):
 
 def prepare_image(image_path, size=(32, 32)):
     """Prepare a custom image for inference using the same transformations as training"""
-    transform = transforms.Compose([
-        transforms.Resize(size),
-        transforms.ToTensor(),
-        transforms.Normalize((0.4914, 0.4822, 0.4465), (0.2023, 0.1994, 0.2010))
-    ])
-    
-    denormalize = transforms.Normalize(
-        mean=[-0.4914 / 0.2023, -0.4822 / 0.1994, -0.4465 / 0.2010],
-        std=[1 / 0.2023, 1 / 0.1994, 1 / 0.2010]
-    )
 
     # Open the image
     image = Image.open(image_path).convert('RGB')  # Ensure the image is in RGB format
     
     # Apply transformations to get the tensor
+    transform = transforms.Compose([
+        transforms.Resize(size),
+        transforms.ToTensor(),
+        transforms.Normalize((0.4914, 0.4822, 0.4465), (0.2023, 0.1994, 0.2010))
+    ])
     image_tensor = transform(image).unsqueeze(0)
     
     # Denormalize for visualization
+    denormalize = transforms.Normalize(
+        mean=[-0.4914 / 0.2023, -0.4822 / 0.1994, -0.4465 / 0.2010],
+        std=[1 / 0.2023, 1 / 0.1994, 1 / 0.2010]
+    )
     denormalized_tensor = denormalize(image_tensor.squeeze(0))
     resized_image = denormalized_tensor.permute(1, 2, 0).clamp(0, 1).numpy()  # Convert to NumPy and clamp values to [0, 1]
     resized_image = (resized_image * 255).astype(np.uint8)  # Scale to [0, 255]
@@ -106,7 +105,7 @@ def get_random_cifar_image():
         transforms.Normalize((0.4914, 0.4822, 0.4465), (0.2023, 0.1994, 0.2010))
     ])
     
-    testset = torchvision.datasets.CIFAR10(root='./1stProject/cifar-10-batches-py', train=False,
+    testset = torchvision.datasets.CIFAR10(root='./cifar-10-batches-py', train=False,
                                           download=True, transform=transform)
     idx = random.randint(0, len(testset) - 1)
     image, label = testset[idx]
@@ -156,7 +155,7 @@ def display_prediction(image, prediction, probabilities=None, title=None):
 
 def main():
     # Model path
-    model_path = '1stProject/cifar10_best.pth'
+    model_path = './cifar10_best.pth'
     
     try:
         model, device = load_model(model_path)
@@ -181,7 +180,7 @@ def main():
             
         elif choice == '2':
             image_name = input("Enter the image's name: ")
-            image_path = '1stProject/cifar10tests/' + image_name
+            image_path = './cifar10tests/' + image_name
             try:
                 print("\nProcessing image...")
                 image_tensor, original_image = prepare_image(image_path)
