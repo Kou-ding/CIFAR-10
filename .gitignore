@@ -7,3 +7,6 @@ manual-batch/*
 
 # Produced Models
 *.pth
+
+# vscode settings
+.vscode/*
