@@ -15,10 +15,10 @@ def load_and_prepare_data():
 
     # Load CIFAR-10 dataset
     # Training set
-    trainset = torchvision.datasets.CIFAR10(root='./1stProject/cifar-10-batches-py', train=True,
+    trainset = torchvision.datasets.CIFAR10(root='./cifar-10-batches-py', train=True,
                                           download=True, transform=transform)
     # Test set
-    testset = torchvision.datasets.CIFAR10(root='./1stProject/cifar-10-batches-py', train=False,
+    testset = torchvision.datasets.CIFAR10(root='./cifar-10-batches-py', train=False,
                                          download=True, transform=transform)
     
     # Convert datasets to numpy arrays
@@ -71,12 +71,12 @@ def main():
     print("Loading and preparing CIFAR-10 dataset...")
     X_train, X_test, y_train, y_test = load_and_prepare_data()
     
-    # Using a subset of the original data for faster execution 
-    subset_size = 5000
-    X_train = X_train[:subset_size]
-    y_train = y_train[:subset_size]
-    X_test = X_test[:1000]
-    y_test = y_test[:1000]
+    ## Using a subset of the original data for faster execution 
+    # subset_size = 5000
+    # X_train = X_train[:subset_size]
+    # y_train = y_train[:subset_size]
+    # X_test = X_test[:1000]
+    # y_test = y_test[:1000]
     
     # Initialize classifiers
     knn1 = KNeighborsClassifier(n_neighbors=1)
@@ -85,21 +85,18 @@ def main():
     
     # Evaluate KNN with k=1
     print("\nEvaluating KNN (k=1)...")
-    knn1_accuracy, knn1_time = evaluate_classifier(
-        knn1, X_train, X_test, y_train, y_test, "KNN (k=1)"
-    )
+    knn1_accuracy, knn1_time = evaluate_classifier(knn1, X_train, X_test, 
+                                                   y_train, y_test, "KNN (k=1)")
     
     # Evaluate KNN with k=3
     print("\nEvaluating KNN (k=3)...")
-    knn3_accuracy, knn3_time = evaluate_classifier(
-        knn3, X_train, X_test, y_train, y_test, "KNN (k=3)"
-    )
+    knn3_accuracy, knn3_time = evaluate_classifier(knn3, X_train, X_test, 
+                                                   y_train, y_test, "KNN (k=3)")
     
     # Evaluate Nearest Centroid
     print("\nEvaluating Nearest Centroid...")
-    nc_accuracy, nc_time = evaluate_classifier(
-        nc, X_train, X_test, y_train, y_test, "Nearest Centroid"
-    )
+    nc_accuracy, nc_time = evaluate_classifier(nc, X_train, X_test, 
+                                               y_train, y_test, "Nearest Centroid")
     
     # Compare results
     print("\nPerformance Comparison:")
