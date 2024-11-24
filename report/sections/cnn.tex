@@ -363,7 +363,7 @@ This is the main loop of the training process. Here, we utilize the aforemention
     \item \textcolor{orange}{\textbf{Train}}: Train the neural network on the dataset.
     \item \textcolor{orange}{\textbf{Evaluate}}: Test the neural network's performance.
     \item \textcolor{orange}{\textbf{Benchmark}}: Compare the performance of the model.
-    \item \textcolor{orange}{\textbf{Save}}: Save the trained neural network for future use.
+    \item \textcolor{orange}{\textbf{Save}}: Save the trained neural network's weights for future use.
 \end{itemize}
 
 \begin{lstlisting}[caption={Training Loop}, label={lst:training_loop}]
@@ -397,17 +397,17 @@ This is the main loop of the training process. Here, we utilize the aforemention
             # Save the model with the best accuracy in the filename
             torch.save(model.state_dict(), f'./cifar10_acc_{test_acc:.2f}.pth')
             best_acc = test_acc
-\end{lstlisting}
 
-\subsection{Benchmarking}
-Finally we print the training time, resulting accuracy and plot the training history.
-
-\begin{lstlisting}[caption={Benchmark}, label={lst:benchmark}]
     # Calculate training time
     training_time = time.time() - start_time # Calculate training time
     print(f'\nTraining completed in {training_time/60:.2f} minutes') # Print training time
     print(f'Best accuracy: {best_acc:.2f}%') # Print final best accuracy
+\end{lstlisting}
 
+\subsection{Accuracy History}
+Finally plot the training history to spot the point of diminishing returns.
+
+\begin{lstlisting}[caption={Accuracy History}, label={lst:history}]
     # Plot training history
     plt.figure(figsize=(10, 5))
     plt.plot(train_acc_history, label='Train Accuracy')
