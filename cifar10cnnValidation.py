@@ -66,8 +66,13 @@ class CNN(nn.Module):
 def load_model(model_path):
     """Load the trained model from .pth file"""
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+    # Run the model on a different device than the one it was trained on
+    if torch.cuda.is_available():
+        map_location = None
+    else:
+        map_location = 'cpu'
     model = CNN().to(device)
-    model.load_state_dict(torch.load(model_path, weights_only=True))
+    model.load_state_dict(torch.load(model_path, map_location=map_location, weights_only=True))
     model.eval()
     return model, device
 
@@ -150,7 +155,7 @@ def display_prediction(image, prediction, probabilities=None, title=None):
 # Custom or random image prediction
 def main():
     # Model path
-    model_path = './cifar10_best.pth'
+    model_path = './cifar10_acc_91.41.pth'
     
     try:
         model, device = load_model(model_path)
@@ -166,7 +171,7 @@ def main():
         print("3. Test manual-batch")
         print("q. Quit")
         
-        choice = input("Enter your choice (1-4): ")
+        choice = input("Enter your choice (1-3): ")
         
         if choice == '1':
             image_tensor, true_label, original_image = get_random_cifar_image()
@@ -215,10 +220,14 @@ def main():
             accuracy = (correct / total) * 100 if total > 0 else 0
             print(f"Accuracy on manual-batch images: {accuracy:.2f}%")
 
-        elif choice == 'q' or choice == 'exit':
+        elif choice == 'q':
+            print("Quitting...")
+            break
+
+        elif choice == 'exit':
             print("Exiting...")
             break
-            
+        
         else:
             print("Invalid choice. Please try again.")
 

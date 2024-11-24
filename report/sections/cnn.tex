@@ -240,9 +240,9 @@ An example convolutional layer (e.g. \texttt{nn.Conv2d(3, 32, 3, padding=1)} ) h
 \subsection{Model Initialization}
 \subsubsection{Loss Function}
 Calculates how well the model is doing by measuring the difference between the model's predictions and the actual target values (ground truth). The lower the loss, the better the predictions. For classification problems, we use:
-\begin{itemize}[noitemsep]
+\begin{itemize}
     \item \textbf{Cross-Entropy Loss}
-    \begin{itemize}[noitemsep]
+    \begin{itemize}
         \item Measures the difference between predicted probability distributions and actual classes.
         \item Commonly used for categorizing into discrete classes.
     \end{itemize}
@@ -254,7 +254,7 @@ weights to minimize the loss function.
 
 \subsubsection{Learning Rate Scheduler}
 Dynamically adjusts the learning rate during training:
-\begin{itemize}[noitemsep]
+\begin{itemize}
     \item Reduces learning rate when performance peaks.
     \item \textbf{patience=3}: Waits for 3 epochs without improvement before triggering.
     \item \textbf{factor=0.5}: Reduces learning rate by half when triggered.
@@ -265,7 +265,7 @@ Dynamically adjusts the learning rate during training:
 When the scheduler is called later in the code's main loop, it is set to minimize the test loss.
 
 \textbf{Example}
-\begin{enumerate}[noitemsep]
+\begin{enumerate}
     \item Starting Learning Rate (LR) = 0.001
     \item After plateau (no improvement for 3 epochs):
     \item New LR = $0.001 \times 0.5 = 0.0005$
@@ -286,7 +286,7 @@ When the scheduler is called later in the code's main loop, it is set to minimiz
 \subsubsection{Data Preprocessing}
 Transformations imposed on the training data improve generalization. The steps for preprocessing 
 are as follows:
-\begin{itemize}[noitemsep]
+\begin{itemize}
     \item Cropping
     \item Flipping
     \item Conversion to tensor
@@ -294,14 +294,14 @@ are as follows:
 \end{itemize}
 
 However, during testing, we only normalize the data:
-\begin{itemize}[noitemsep]
+\begin{itemize}
     \item Conversion to tensor
     \item Normalization
 \end{itemize}
 
 \subsubsection{Conversion to Tensor}
 \textbf{Converts the input image} into a PyTorch tensor for easy manipulation. The tensor format:
-\begin{itemize}[noitemsep]
+\begin{itemize}
     \item \textcolor{orange}{\textbf{Rescales}} pixel values from the range [0, 255] (for images) 
     to [0, 1] by dividing by 255.
     \item \textcolor{orange}{\textbf{Rearranges the image dimensions}} from (Height * Width * Channels)
@@ -346,20 +346,16 @@ training.
 
     # Our Dataset
     # Load CIFAR-10 training dataset
-    trainset = torchvision.datasets.CIFAR10(root='./cifar-10-batches-py', train=True,
-                                        download=True, transform=transform_train)
-    trainloader = DataLoader(trainset, batch_size=128,
-                            shuffle=True, num_workers=2)
+    trainset = torchvision.datasets.CIFAR10(root='./cifar-10-batches-py', train=True, download=True, transform=transform_train)
+    trainloader = DataLoader(trainset, batch_size=128, shuffle=True, num_workers=2)
     # Load CIFAR-10 test dataset
-    testset = torchvision.datasets.CIFAR10(root='./cifar-10-batches-py', train=False,
-                                        download=True, transform=transform_test)
-    testloader = DataLoader(testset, batch_size=100,
-                        shuffle=False, num_workers=2)
+    testset = torchvision.datasets.CIFAR10(root='./cifar-10-batches-py', train=False, download=True, transform=transform_test)
+    testloader = DataLoader(testset, batch_size=100, shuffle=False, num_workers=2)
 \end{lstlisting}
 
 \subsection{Training Loop}
 This is the main loop of the training process. Here, we utilize the aforementioned functions to:
-\begin{itemize}[noitemsep]
+\begin{itemize}
     \item \textcolor{orange}{\textbf{Train}}: Train the neural network on the dataset.
     \item \textcolor{orange}{\textbf{Evaluate}}: Test the neural network's performance.
     \item \textcolor{orange}{\textbf{Benchmark}}: Compare the performance of the model.
@@ -429,15 +425,15 @@ which was more than enough for our use case. Here are the results when choosing 
 for 50 epochs:
 \begin{figure}[H]
     \centering
-    \includegraphics[width=2.5in]{media/cifar10_accuracy.png}
+    \includegraphics[width=4in]{media/cifar10_accuracy.png}
     \caption{Accuracy History}
     \label{CIFAR example}
 \end{figure}
-Here it is evident that around epoch 50 the model begins to settle on the final accuracy, while on
-epoch 60 the is barely any fluctuation.
+Here it is evident that around epoch 50 the model begins to settle on the final accuracy, while past
+epoch 60 there is barely any fluctuation.
 \begin{figure}[H]
     \centering
-    \includegraphics[width=2.5in]{media/epoch_100.png}
+    \includegraphics[width=3in]{media/epoch_100.png}
     \caption{Epoch 100 console output}
     \label{CIFAR example}
 \end{figure}

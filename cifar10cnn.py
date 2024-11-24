@@ -88,6 +88,41 @@ def evaluate(model, testloader, criterion, device):
 
     return accuracy, avg_loss
 
+####################### Define the MLP architecture #######################
+class MLP(nn.Module):
+    def __init__(self):
+        super(MLP, self).__init__()
+        # Input size: 32x32x3 = 3072 (flattened RGB image)
+        self.flatten = nn.Flatten()
+        
+        self.layers = nn.Sequential(
+            # First hidden layer
+            nn.Linear(3072, 2048),
+            nn.BatchNorm1d(2048),
+            nn.ReLU(),
+            nn.Dropout(0.3),
+            
+            # Second hidden layer
+            nn.Linear(2048, 1024),
+            nn.BatchNorm1d(1024),
+            nn.ReLU(),
+            nn.Dropout(0.3),
+            
+            # Third hidden layer
+            nn.Linear(1024, 512),
+            nn.BatchNorm1d(512),
+            nn.ReLU(),
+            nn.Dropout(0.3),
+            
+            # Output layer
+            nn.Linear(512, 10)  # 10 classes for CIFAR-10
+        )
+    
+    def forward(self, x):
+        x = self.flatten(x)  # Flatten the input image
+        x = self.layers(x)   # Pass through MLP layers
+        return x
+
 ####################### Define the CNN architecture #######################
 class CNN(nn.Module):
     # Initialize the architecture
@@ -98,11 +133,15 @@ class CNN(nn.Module):
             nn.Conv2d(3, 32, 3, padding=1), # 3 input channels (R G B), 32 output channels, 3x3 kernel, 1 padding
             nn.BatchNorm2d(32), # normalize the output of the previous layer to have a mean = 0 and standard deviation = 1
             nn.ReLU(), # ReLU activation function: f(x) = max(0, x)
+            #nn.Tanh(), # Hyperbolic tangent activation function: f(x) = tanh(x)
 
             # Second convolutional layer
             nn.Conv2d(32, 64, 3, padding=1),
             nn.BatchNorm2d(64),
-            nn.ReLU(), 
+            nn.ReLU(),
+            #nn.Tanh(),
+
+            # First pooling layer
             nn.MaxPool2d(2, 2),  # for each 2x2 window, take the maximum value
             nn.Dropout(0.25), # set 25% of the neurons to zero
 
@@ -110,11 +149,15 @@ class CNN(nn.Module):
             nn.Conv2d(64, 128, 3, padding=1),
             nn.BatchNorm2d(128),
             nn.ReLU(),
+            #nn.Tanh(),
 
             # Fourth convolutional layer
             nn.Conv2d(128, 128, 3, padding=1),
             nn.BatchNorm2d(128),
             nn.ReLU(),
+            #nn.Tanh(),
+
+            # Second pooling layer
             nn.MaxPool2d(2, 2),
             nn.Dropout(0.25),
 
@@ -122,11 +165,15 @@ class CNN(nn.Module):
             nn.Conv2d(128, 256, 3, padding=1),
             nn.BatchNorm2d(256),
             nn.ReLU(),
+            #nn.Tanh(),
 
             # Sixth convolutional layer
             nn.Conv2d(256, 256, 3, padding=1),
             nn.BatchNorm2d(256),
             nn.ReLU(),
+            #nn.Tanh(),
+
+            # Third pooling layer
             nn.MaxPool2d(2, 2),
             nn.Dropout(0.25),
         )
@@ -134,6 +181,7 @@ class CNN(nn.Module):
         self.fc_layers = nn.Sequential(
             nn.Linear(256 * 4 * 4, 512), # First fully connected layer
             nn.ReLU(),
+            #nn.Tanh(),
             nn.Dropout(0.5),
             nn.Linear(512, 10) # Final fully connected layer, 512 input features, 10 output features (classes)
         )
@@ -154,6 +202,7 @@ def main():
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
     ######################### Data Preprocessing #########################
+    # Default
     # Tranformations for the training dataset
     transform_train = transforms.Compose([
         transforms.RandomCrop(32, padding=4), # Randomly crops image with padding
@@ -166,6 +215,48 @@ def main():
         transforms.ToTensor(), # Converts image to tensor
         transforms.Normalize((0.4914, 0.4822, 0.4465), (0.2023, 0.1994, 0.2010))
     ])
+
+    # # Standard [-1,1]
+    # # Tranformations for the training dataset
+    # transform_train = transforms.Compose([
+    #     transforms.RandomCrop(32, padding=4), # Randomly crops image with padding
+    #     transforms.RandomHorizontalFlip(), # Randomly flips image horizontally
+    #     transforms.ToTensor(), # Converts image to tensor
+    #     transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))
+    # ])
+    # # Tranformations for the test dataset
+    # transform_test = transforms.Compose([
+    #     transforms.ToTensor(), # Converts image to tensor
+    #     transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))
+    # ])
+
+    # # Zero-centered
+    # # Tranformations for the training dataset
+    # transform_train = transforms.Compose([
+    #     transforms.RandomCrop(32, padding=4), # Randomly crops image with padding
+    #     transforms.RandomHorizontalFlip(), # Randomly flips image horizontally
+    #     transforms.ToTensor(), # Converts image to tensor
+    #     transforms.Normalize((0.5, 0.5, 0.5), (0.25, 0.25, 0.25))
+    # ])
+    # # Tranformations for the test dataset
+    # transform_test = transforms.Compose([
+    #     transforms.ToTensor(), # Converts image to tensor
+    #     transforms.Normalize((0.5, 0.5, 0.5), (0.25, 0.25, 0.25))
+    # ])
+
+    # # Channel-specific wide
+    # # Tranformations for the training dataset
+    # transform_train = transforms.Compose([
+    #     transforms.RandomCrop(32, padding=4), # Randomly crops image with padding
+    #     transforms.RandomHorizontalFlip(), # Randomly flips image horizontally
+    #     transforms.ToTensor(), # Converts image to tensor
+    #     transforms.Normalize((0.4914, 0.4822, 0.4465), (0.4, 0.4, 0.4))
+    # ])
+    # # Tranformations for the test dataset
+    # transform_test = transforms.Compose([
+    #     transforms.ToTensor(), # Converts image to tensor
+    #     transforms.Normalize((0.4914, 0.4822, 0.4465), (0.4, 0.4, 0.4))
+    # ])
 
     ############################# Our Dataset #############################
     # Load CIFAR-10 training dataset
@@ -180,9 +271,14 @@ def main():
                         shuffle=False, num_workers=2)
         
     ######################### Model Initialization ##########################
-    model = CNN().to(device) # Send model to device for training
+    model = CNN().to(device) # CNN: Send model to device for training
+    #model = MLP().to(device) # MLP: Send model to device for training
     criterion = nn.CrossEntropyLoss() # Loss function
     optimizer = optim.Adam(model.parameters(), lr=0.001) # Optimizer
+    # optimizer = optim.SGD(model.parameters(), 
+    #                      lr=0.01,           # Initial learning rate
+    #                      momentum=0.9,      # Momentum factor
+    #                      weight_decay=5e-4) # Weight decay for regularization
     scheduler = optim.lr_scheduler.ReduceLROnPlateau(optimizer, 'min', patience=3, factor=0.5) # Learning rate scheduler
 
     # Main loop
@@ -213,7 +309,7 @@ def main():
         if test_acc > best_acc:
             print(f'Saving best model with accuracy: {test_acc:.2f}%') # Print current best accuracy
             # Save the model with the best accuracy in the filename
-            torch.save(model.state_dict(), f'./cifar10_acc_{test_acc:.2f}.pth')
+            #torch.save(model.state_dict(), f'./cifar10_acc_{test_acc:.2f}.pth')
             best_acc = test_acc
 
     # Calculate training time
