@@ -10,8 +10,26 @@
 \usepackage{verbatim}
 \usepackage{graphicx}
 \usepackage{cite}
-\usepackage{longtable} %for tables
-\usepackage{booktabs} %for tables
+\usepackage{longtable} % for tables
+\usepackage{booktabs} % for tables
+
+% for code snippets
+\usepackage{listings}
+\usepackage{xcolor} % for customizing colors
+\lstset{
+    language=Python,            % Set the language to Python
+    basicstyle=\ttfamily\small, % Set font and size
+    keywordstyle=\color{blue},  % Keywords in blue
+    stringstyle=\color{green},  % Strings in green
+    commentstyle=\color{gray},  % Comments in gray
+    showstringspaces=false,     % Do not display spaces in strings
+    numbers=left,               % Line numbers on the left
+    numberstyle=\tiny\color{gray}, % Style for line numbers
+    frame=single,               % Add a frame around the code
+    breaklines=true,            % Allow line breaking
+    captionpos=b,               % Caption at the bottom
+}
+
 \hyphenation{op-tical net-works}
 \setlength{\parindent}{0pt}
 
